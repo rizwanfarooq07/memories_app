@@ -1,4 +1,6 @@
-import * as api from "../api";
+// import axios from "axios";
+import { userInstance } from "../config/axios.config";
+// import * as api from "../api";
 import {
   CREATE,
   DELETE,
@@ -10,7 +12,7 @@ import {
 //Action Creaters
 export const getPosts = () => async (dispatch) => {
   try {
-    const { data } = await api.fetchPosts();
+    const { data } = await userInstance.get("/api/posts");
 
     dispatch({
       type: FETCH_ALL,
@@ -21,9 +23,15 @@ export const getPosts = () => async (dispatch) => {
   }
 };
 
-export const createPost = (post) => async (dispatch) => {
+export const createPost = (newPost) => async (dispatch) => {
+  const config = {
+    headers: {
+      "content-type": "application/json",
+    },
+  };
+
   try {
-    const { data } = await api.createPost(post);
+    const { data } = await userInstance.post("/api/posts", newPost, config);
 
     dispatch({
       type: CREATE,
@@ -34,9 +42,9 @@ export const createPost = (post) => async (dispatch) => {
   }
 };
 
-export const updatePost = (id, post) => async (dispatch) => {
+export const updatePost = (id, updatedPost) => async (dispatch) => {
   try {
-    const { data } = await api.updatePost(id, post);
+    const { data } = await userInstance.patch(`/api/posts/${id}`, updatedPost);
 
     dispatch({
       type: UPDATE,
@@ -49,7 +57,7 @@ export const updatePost = (id, post) => async (dispatch) => {
 
 export const deletePost = (id) => async (dispatch) => {
   try {
-    await api.deletePost(id);
+    await userInstance.delete(`/api/posts/${id}`);
 
     dispatch({
       type: DELETE,
@@ -62,7 +70,7 @@ export const deletePost = (id) => async (dispatch) => {
 
 export const likePost = (id) => async (dispatch) => {
   try {
-    const { data } = await api.likePost(id);
+    const { data } = await userInstance.patch(`/api/posts/${id}/likePost`);
 
     dispatch({
       type: LIKE,
