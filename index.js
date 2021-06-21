@@ -2,28 +2,15 @@ import express from "express";
 import bodyParser from "body-parser";
 import path from "path";
 import cors from "cors";
-import mongoose from "mongoose";
+import connectDB from "./server/config/db.js";
 import dotenv from "dotenv";
 import postsRoutes from "./server/routes/postRoutes.js";
 
-const app = express();
 dotenv.config();
 
-const connectDB = async (req, res) => {
-  try {
-    const conn = await mongoose.connect(process.env.CONNECTION_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-    });
-    console.log(`MongoDB connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.log(`Error: ${error.message}`);
-    process.exit(1);
-  }
-};
-
 connectDB();
+
+const app = express();
 
 app.use(bodyParser.json({ limit: "30mb", extended: "true" }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: "true" }));
